@@ -14,13 +14,13 @@
 const { chromium } = require('playwright');
 
 // ---------- Config ----------
-const EMAIL = process.env.EMAIL;
-const PASSWORD = process.env.PASSWORD;
+const EMAIL = process.env.BIWENGER_EMAIL;
+const PASSWORD = process.env.BIWENGER_PASSWORD;
 const AUCTIONS_URL = 'https://biwenger.as.com/market/auctions';
 const LOGIN_URL = 'https://biwenger.as.com/login?lang=es';
 
 if (!EMAIL || !PASSWORD) {
-  console.error('Faltan EMAIL o PASSWORD en variables de entorno.');
+  console.error('Faltan BIWENGER_EMAIL o BIWENGER_PASSWORD en variables de entorno.');
   process.exit(1);
 }
 const DRY_RUN = process.env.DRY_RUN === '1';
