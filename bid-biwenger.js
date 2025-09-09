@@ -14,8 +14,8 @@
 const { chromium } = require('playwright');
 
 // ---------- Config ----------
-const EMAIL = "gbnq98yrbh@privaterelay.appleid.com" //process.env.BIWENGER_EMAIL;
-const PASSWORD = "824563Jj" //process.env.BIWENGER_PASSWORD;
+const EMAIL = process.env.EMAIL;
+const PASSWORD = process.env.PASSWORD;
 const AUCTIONS_URL = 'https://biwenger.as.com/market/auctions';
 const LOGIN_URL = 'https://biwenger.as.com/login?lang=es';
 
