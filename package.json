@@ -6,6 +6,6 @@
     "bid": "node bid-biwenger.js"
   },
   "devDependencies": {
-    "playwright": "^1.47.2"
+    "playwright": "^1.55.0"
   }
 }

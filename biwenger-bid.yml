@@ -1,14 +1,14 @@
-name: Biwenger Bidder
+# .github/workflows/biwenger-bid.yml (versión de PRUEBA)
+name: Biwenger Bidder (Test)
 
 on:
-  schedule:
-    - cron: "0 * * * *"   # cada hora en punto
   workflow_dispatch: {}
+  schedule:
+    - cron: "0 * * * *"
 
 jobs:
   run-bidder:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,22 +23,51 @@ jobs:
           npm ci
           npx playwright install --with-deps chromium
 
-      - name: Run bidder
+      - name: Run bidder (DRY RUN)
         env:
           BIWENGER_EMAIL: ${{ secrets.BIWENGER_EMAIL }}
           BIWENGER_PASSWORD: ${{ secrets.BIWENGER_PASSWORD }}
-          DRY_RUN: ${{ vars.DRY_RUN || '0' }}
-          BID_CAP: ${{ vars.BID_CAP || '0' }}
+          DRY_RUN: '1'                 # ← NO PUJA
+          BID_CAP: '1'                 # seguridad
           HEADLESS: '1'
           CSV_PATH: 'logs/biwenger_bids.csv'
-          MAX_OVERPAY_RATIO: ${{ vars.MAX_OVERPAY_RATIO || '1.38' }}
+          MAX_OVERPAY_RATIO: '1.00'    # fuerza descarte por sobreprecio
+          SLOW_MO: '0'
+          DEBUG: 'pw:api'              # logs verbosos
         run: node bid-biwenger.js
 
-      - name: Upload bids CSV
+      - name: Upload CSV
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: biwenger-bids
+          name: csv
           path: logs/biwenger_bids.csv
           if-no-files-found: ignore
-          retention-days: 30
+          retention-days: 7
+
+      - name: Upload HAR
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: har
+          path: logs/biwenger.har
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload Videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videos
+          path: logs/videos
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload Trace
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: traces
+          path: logs/trace-*.zip
+          if-no-files-found: ignore
+          retention-days: 7
