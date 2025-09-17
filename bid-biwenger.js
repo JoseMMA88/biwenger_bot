@@ -52,13 +52,14 @@ async function httpJson(url, opts = {}) {
 async function login() {
   const url = 'https://biwenger.as.com/api/v2/auth/login';
   const body = { email: CONFIG.EMAIL, password: CONFIG.PASSWORD };
+  console.log(body);
   const res = await httpJson(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
   // Ajusta si el campo difiere en tu entorno
-  const token = res?.token || res?.data?.token || res?.jwt || null;
+  const token = res?.token;
   if (!token) throw new Error('No se obtuvo token de login');
   return token;
 }
