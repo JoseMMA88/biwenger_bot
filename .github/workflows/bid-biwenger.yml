@@ -31,8 +31,8 @@ jobs:
         env:
           BIWENGER_EMAIL: ${{ secrets.BIWENGER_EMAIL }}
           BIWENGER_PASSWORD: ${{ secrets.BIWENGER_PASSWORD }}
-          LEAGUE_ID: ${{ secrets.BIWENGER_LEAGUE_ID }}
-          USER_ID: ${{ secrets.BIWENGER_USER_ID }}
+          BIWENGER_LEAGUE_ID: ${{ secrets.BIWENGER_LEAGUE_ID }}
+          BIWENGER_USER_ID: ${{ secrets.BIWENGER_USER_ID }}
           X_LANG: ${{ env.X_LANG }}
           X_VERSION: ${{ env.X_VERSION }}
           MAX_PRICE_MULTIPLIER: ${{ env.MAX_PRICE_MULTIPLIER }}
