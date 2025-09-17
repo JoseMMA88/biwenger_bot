@@ -182,19 +182,19 @@ function euro(n) {
       const lastFromId = Number(lastBid?.from?.id);
       const myId = Number(CONFIG.USER_ID);
       if (Number.isFinite(lastFromId) && Number.isFinite(myId) && lastFromId === myId) {
-        console.log(`[SKIP] ${playerId} descartado: última puja es tuya (from.id=${lastFromId}).`);
+        console.log(`[SKIP] Jugador ${details.name} con ID ${playerId} descartado: última puja es tuya (from.id=${lastFromId}).`);
         continue;
       }
 
       const lastBidAmount = Number(lastBid?.amount);
 
       if (!Number.isFinite(price)) {
-        console.log(`[SKIP] Jugador ${playerId} sin price válido.`);
+        console.log(`[SKIP] Jugador ${details.name} con ID ${playerId} sin price válido.`);
         continue;
       }
 
       if (!Number.isFinite(inc) || inc < CONFIG.INCREMENT_THRESHOLD) {
-        console.log(`[SKIP] ${playerId} inc=${inc} < ${CONFIG.INCREMENT_THRESHOLD}`);
+        console.log(`[SKIP] Jugador ${details.name} con ID ${playerId} inc=${inc} < ${CONFIG.INCREMENT_THRESHOLD}`);
         continue;
       }
 
@@ -206,7 +206,7 @@ function euro(n) {
 
       if (!withinCap(bidAmount, price)) {
         const cap = Math.floor(price * CONFIG.MAX_PRICE_MULTIPLIER);
-        console.log(`[SKIP] ${playerId} bid=${bidAmount} excede 150% de price=${price} (cap=${cap}).`);
+        console.log(`[SKIP] Jugador ${details.name} con ID ${playerId} bid=${bidAmount} excede 150% de price=${price} (cap=${cap}).`);
         continue;
       }
 
