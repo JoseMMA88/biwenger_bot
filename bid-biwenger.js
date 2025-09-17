@@ -52,7 +52,6 @@ async function httpJson(url, opts = {}) {
 async function login() {
   const url = 'https://biwenger.as.com/api/v2/auth/login';
   const body = { email: CONFIG.EMAIL, password: CONFIG.PASSWORD };
-  console.log(body);
   const res = await httpJson(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
