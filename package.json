@@ -1,11 +1,10 @@
 {
-  "name": "biwenger-bidder",
+  "name": "biwenger-api-bidder",
+  "version": "1.0.0",
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "bid": "node bid-biwenger.js"
+    "start": "node scripts/bid-biwenger-api.js"
   },
-  "devDependencies": {
-    "playwright": "^1.55.0"
-  }
+  "dependencies": {}
 }
