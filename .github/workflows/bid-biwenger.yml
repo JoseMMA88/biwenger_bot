@@ -38,4 +38,4 @@ jobs:
           MAX_PRICE_MULTIPLIER: ${{ env.MAX_PRICE_MULTIPLIER }}
           BID_INCREMENT_FACTOR: ${{ env.BID_INCREMENT_FACTOR }}
           DRY_RUN: ${{ env.DRY_RUN }}
-        run: node bid-biwenger-api.js
+        run: node bid-biwenger.js
