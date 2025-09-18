@@ -11,7 +11,7 @@ const CONFIG = {
   DRY_RUN: process.env.DRY_RUN === '1',
   MAX_PRICE_MULTIPLIER: Number(process.env.MAX_PRICE_MULTIPLIER || '1.5'),      // 150%
   BID_INCREMENT_FACTOR: Number(process.env.BID_INCREMENT_FACTOR || '1.01'),     // +1%
-  INCREMENT_THRESHOLD: 40000
+  INCREMENT_THRESHOLD: 30000
 };
 
 function assertEnv() {
