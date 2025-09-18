@@ -1,11 +1,11 @@
-// scripts/bid-biwenger-api.js
+// bid-biwenger.js
 // Node >= 20 (fetch y AbortSignal nativos)
 
 const CONFIG = {
   EMAIL: process.env.BIWENGER_EMAIL,
   PASSWORD: process.env.BIWENGER_PASSWORD,
-  LEAGUE_ID: process.env.LEAGUE_ID,
-  USER_ID: process.env.USER_ID, // tu team id (p.ej. 8788636)
+  LEAGUE_ID: process.env.BIWENGER_LEAGUE_ID,
+  USER_ID: process.env.BIWENGER_USER_ID, // tu team id (p.ej. 8788636)
   X_LANG: process.env.X_LANG || 'es',
   X_VERSION: process.env.X_VERSION || '628',
   DRY_RUN: process.env.DRY_RUN === '1',
@@ -50,15 +50,36 @@ async function httpJson(url, opts = {}) {
 }
 
 async function login() {
+  if (process.env.BIWENGER_TOKEN) {
+    console.log('[AUTH] Usando BIWENGER_TOKEN (saltando login).');
+    return process.env.BIWENGER_TOKEN;
+  }
   const url = 'https://biwenger.as.com/api/v2/auth/login';
-  const body = { email: CONFIG.EMAIL, password: CONFIG.PASSWORD };
-  const res = await httpJson(url, {
+  const body = { email: process.env.BIWENGER_EMAIL, password: process.env.BIWENGER_PASSWORD };
+  const headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json, text/plain, */*',
+    'X-Lang': process.env.X_LANG || 'es',
+    'X-Version': process.env.X_VERSION || '628',
+    'Origin': 'https://biwenger.as.com',
+    'Referer': 'https://biwenger.as.com/login',
+    'User-Agent': 'Mozilla/5.0',
+    'Accept-Language': 'es-ES,es;q=0.9'
+  };
+  const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    headers,
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(20000)
   });
-  // Ajusta si el campo difiere en tu entorno
-  const token = res?.token;
+  const txt = await res.text();
+  if (!res.ok) {
+    console.error('[LOGIN DEBUG] status=', res.status, 'email=', body.email);
+    console.error('[LOGIN DEBUG] body=', txt);
+    throw new Error(`Login failed ${res.status}`);
+  }
+  const json = txt ? JSON.parse(txt) : {};
+  const token = json?.token || json?.data?.token || json?.jwt;
   if (!token) throw new Error('No se obtuvo token de login');
   return token;
 }
@@ -80,10 +101,35 @@ async function getMarketAuctions(token) {
   return auctions;
 }
 
+function normalizePlayerDetails(raw) {
+  const node =
+    raw?.data?.player ??
+    (Array.isArray(raw?.data) ? raw.data[0] : raw?.data) ??
+    raw?.player ??
+    (Array.isArray(raw) ? raw[0] : raw) ??
+    raw;
+
+  if (!node || typeof node !== 'object') return null;
+
+  const name = String(node.name);
+  const price = Number(node.price ?? node.marketValue ?? node.value);
+  const priceIncrement = Number(node.priceIncrement ?? node.increment ?? node.deltaPrice);
+
+
+  return { name, price, priceIncrement, raw: node };
+}
+
 async function getPlayerDetails(playerId) {
+  const headers = {
+    'Accept': 'application/json, text/plain, */*',
+    'X-Lang': CONFIG.X_LANG,
+    'X-Version': CONFIG.X_VERSION,
+    'User-Agent': 'Mozilla/5.0'
+  };
+
   const url = `https://cf.biwenger.com/api/v2/players/la-liga/${encodeURIComponent(playerId)}`;
-  const res = await httpJson(url, { headers: { 'X-Lang': CONFIG.X_LANG } });
-  return res;
+  const res = await httpJson(url, { headers, timeoutMs: 15000 });
+  return normalizePlayerDetails(res);
 }
 
 function computeBidAmount({ price, lastBidAmount }) {
@@ -172,8 +218,9 @@ function euro(n) {
 
       // Traer detalles del jugador
       const details = await getPlayerDetails(playerId);
-      const price = Number(details?.price);
-      const inc = Number(details?.priceIncrement ?? details?.priceincrement ?? details?.increment);
+      const name = details.name;
+      const price = details.price;
+      const inc = details.priceIncrement;
 
       // lastBid: puede venir en details o en la propia auction
       const lastBid = details?.lastBid ?? a?.lastBid ?? null;
@@ -182,19 +229,19 @@ function euro(n) {
       const lastFromId = Number(lastBid?.from?.id);
       const myId = Number(CONFIG.USER_ID);
       if (Number.isFinite(lastFromId) && Number.isFinite(myId) && lastFromId === myId) {
-        console.log(`[SKIP] Jugador ${details.name} con ID ${playerId} descartado: última puja es tuya (from.id=${lastFromId}).`);
+        console.log(`[SKIP] Jugador ${details.name} descartado: última puja es tuya (from.id=${lastFromId}).`);
         continue;
       }
 
       const lastBidAmount = Number(lastBid?.amount);
 
       if (!Number.isFinite(price)) {
-        console.log(`[SKIP] Jugador ${details.name} con ID ${playerId} sin price válido.`);
+        console.log(`[SKIP] Jugador ${details.name} sin price válido.`);
         continue;
       }
 
       if (!Number.isFinite(inc) || inc < CONFIG.INCREMENT_THRESHOLD) {
-        console.log(`[SKIP] Jugador ${details.name} con ID ${playerId} inc=${inc} < ${CONFIG.INCREMENT_THRESHOLD}`);
+        console.log(`[SKIP] Jugador ${details.name} inc=${inc} < ${CONFIG.INCREMENT_THRESHOLD}`);
         continue;
       }
 
@@ -206,11 +253,12 @@ function euro(n) {
 
       if (!withinCap(bidAmount, price)) {
         const cap = Math.floor(price * CONFIG.MAX_PRICE_MULTIPLIER);
-        console.log(`[SKIP] Jugador ${details.name} con ID ${playerId} bid=${bidAmount} excede 150% de price=${price} (cap=${cap}).`);
+        console.log(`[SKIP] Jugador ${details.name} bid=${bidAmount} excede 150% de price=${price} (cap=${cap}).`);
         continue;
       }
 
       candidates.push({
+        name,
         playerId,
         price,
         inc,
@@ -230,21 +278,21 @@ function euro(n) {
     console.log('--- Candidatos ---');
     for (const c of candidates) {
       console.log(
-        `Player ${c.playerId} | price=${euro(c.price)} | inc=${euro(c.inc)} | lastBid=${c.lastBidAmount ? euro(c.lastBidAmount) : '-'} | bid=${euro(c.bidAmount)}`
+        `Player ${c.name} ${c.playerId} | price=${euro(c.price)} | inc=${euro(c.inc)} | lastBid=${c.lastBidAmount ? euro(c.lastBidAmount) : '-'} | bid=${euro(c.bidAmount)}`
       );
     }
 
     // 5) Ejecutar pujas
     for (const c of candidates) {
       if (CONFIG.DRY_RUN) {
-        console.log(`[DRY_RUN] Simular puja → Player ${c.playerId} por ${euro(c.bidAmount)}`);
+        console.log(`[DRY_RUN] Simular puja → Player ${c.name} por ${euro(c.bidAmount)}`);
         continue;
       }
       try {
         const out = await placeBid(token, c.playerId, c.bidAmount);
-        console.log(`✅ Puja OK (${out.endpoint}) → Player ${c.playerId} por ${euro(c.bidAmount)}`);
+        console.log(`✅ Puja OK (${out.endpoint}) → Player ${c.name} por ${euro(c.bidAmount)}`);
       } catch (err) {
-        console.log(`⚠️ Error al pujar Player ${c.playerId} por ${euro(c.bidAmount)}:`, String(err));
+        console.log(`⚠️ Error al pujar Player ${c.name} por ${euro(c.bidAmount)}:`, String(err));
       }
     }
 
