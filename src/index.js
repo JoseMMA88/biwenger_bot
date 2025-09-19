@@ -1,5 +1,7 @@
 try { require('dotenv').config(); } catch {}
 
+import { App } from './app.js';
+
 import { Logger } from './utils/logger.js';
 
 import { Config } from './core/config.js';
