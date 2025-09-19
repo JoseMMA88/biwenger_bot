@@ -1,6 +1,6 @@
 import { Logger } from './utils/logger.js';
 
-const { euro } = require('./utils/numbers');
+const { euro } = require('./utils/numbers.js');
 
 class App {
   constructor(config, auth, market, players, policy, executor) {

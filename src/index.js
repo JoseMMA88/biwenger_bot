@@ -2,15 +2,15 @@ try { require('dotenv').config(); } catch {}
 
 import { Logger } from './utils/logger.js';
 
-import { Config } from './core/config';
-import { HttpClient } from './core/http';
+import { Config } from './core/config.js';
+import { HttpClient } from './core/http.js';
 
-import { AuthService } from './services/auth';
-import { MarketService } from './services/market';
-import { PlayerService } from './services/player';
+import { AuthService } from './services/auth.js';
+import { MarketService } from './services/market.js';
+import { PlayerService } from './services/player.js';
 
-import { BidPolicy } from './domain/bidPolicy';
-import { BidExecutor } from './domain/bidExecutor';
+import { BidPolicy } from './domain/bidPolicy.js';
+import { BidExecutor } from './domain/bidExecutor.js';
 
 import { App } from './app';
 

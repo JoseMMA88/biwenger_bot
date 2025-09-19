@@ -1,4 +1,4 @@
-import { PickNumber } from '../utils/numbers';
+import { PickNumber } from '../utils/numbers.js';
 
 class PlayerService {
   constructor(config, http) {
