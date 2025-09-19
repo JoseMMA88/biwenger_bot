@@ -1,4 +1,4 @@
-class BidPolicy {
+export class BidPolicy {
   constructor(config) {
     this.cfg = config;
   }
@@ -23,5 +23,3 @@ class BidPolicy {
     return bidAmount < cap;
   }
 }
-
-module.exports = { BidPolicy };

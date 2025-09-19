@@ -2,7 +2,7 @@ import { Logger } from '../utils/logger.js';
 
 import { Euro } from '../utils/numbers.js';
 
-class BidExecutor {
+export class BidExecutor {
   constructor(config, marketService, policy) {
     this.cfg = config;
     this.market = marketService;
@@ -24,5 +24,3 @@ class BidExecutor {
     }
   }
 }
-
-module.exports = { BidExecutor };
