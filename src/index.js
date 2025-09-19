@@ -1,16 +1,18 @@
 try { require('dotenv').config(); } catch {}
 
-const { Config } = require('./core/config');
-const { HttpClient } = require('./core/http');
+import { Logger } from './utils/logger.js';
 
-const { AuthService } = require('./services/auth');
-const { MarketService } = require('./services/market');
-const { PlayerService } = require('./services/player');
+import { Config } from './core/config';
+import { HttpClient } from './core/http';
 
-const { BidPolicy } = require('./domain/bidPolicy');
-const { BidExecutor } = require('./domain/bidExecutor');
+import { AuthService } from './services/auth';
+import { MarketService } from './services/market';
+import { PlayerService } from './services/player';
 
-const { App } = require('./app');
+import { BidPolicy } from './domain/bidPolicy';
+import { BidExecutor } from './domain/bidExecutor';
+
+import { App } from './app';
 
 (async function bootstrap() {
   const cfg = new Config(process.env);
@@ -31,7 +33,7 @@ const { App } = require('./app');
   const app = new App(cfg, auth, market, players, policy, executor);
 
   app.run().catch(err => {
-    console.error('[FATAL]', err);
+    Logger.error(err);
     process.exit(1);
   });
 })();

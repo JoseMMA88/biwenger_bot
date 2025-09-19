@@ -1,4 +1,4 @@
-const { pickNumber } = require('../utils/numbers');
+import { PickNumber } from '../utils/numbers';
 
 class PlayerService {
   constructor(config, http) {
@@ -17,8 +17,8 @@ class PlayerService {
     if (!node || typeof node !== 'object') return null;
 
     const name = String(node.name ?? '');
-    const price = pickNumber(node.price, node.marketValue, node.value);
-    const priceIncrement = pickNumber(node.priceIncrement, node.increment, node.deltaPrice, node.priceDiff);
+    const price = PickNumber(node.price, node.marketValue, node.value);
+    const priceIncrement = PickNumber(node.priceIncrement, node.increment, node.deltaPrice, node.priceDiff);
 
     return { name, price, priceIncrement, raw: node };
   }
