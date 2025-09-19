@@ -1,8 +1,8 @@
 import { Logger } from './utils/logger.js';
 
-const { euro } = require('./utils/numbers.js');
+import { Euro } from './utils/numbers.js';
 
-class App {
+export class App {
   constructor(config, auth, market, players, policy, executor) {
     this.cfg = config;
     this.auth = auth;
@@ -89,12 +89,10 @@ class App {
 
     Logger.section('Candidatos');
     for (const c of candidates) {
-      Logger.success(`Player ${c.name} ${c.playerId} | price=${euro(c.price)} | inc=${euro(c.inc)} | lastBid=${c.lastBidAmount ? euro(c.lastBidAmount) : '-'} | bid=${euro(c.bidAmount)}`);
+      Logger.success(`Player ${c.name} ${c.playerId} | price=${Euro(c.price)} | inc=${Euro(c.inc)} | lastBid=${c.lastBidAmount ? Euro(c.lastBidAmount) : '-'} | bid=${Euro(c.bidAmount)}`);
     }
 
     await this.executor.execute(token, candidates);
     Logger.success('[END] Proceso completado.');
   }
 }
-
-module.exports = { App };
