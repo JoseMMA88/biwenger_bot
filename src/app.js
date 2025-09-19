@@ -57,7 +57,7 @@ export class App {
       }
 
       if (!this.policy.isIncrementCandidate(inc)) {
-        Logger.skip(`${name}', 'inc=${inc} < ${this.cfg.INCREMENT_THRESHOLD}`);
+        Logger.skip(`${name}', 'inc=${Logger.inc(inc)} < ${this.cfg.INCREMENT_THRESHOLD}`);
         continue;
       }
 
@@ -89,7 +89,7 @@ export class App {
 
     Logger.section('Candidatos');
     for (const c of candidates) {
-      Logger.success(`Player ${c.name} ${c.playerId} | price=${Euro(c.price)} | inc=${Euro(c.inc)} | lastBid=${c.lastBidAmount ? Euro(c.lastBidAmount) : '-'} | bid=${Euro(c.bidAmount)}`);
+      Logger.success(`Player ${c.name} ${c.playerId} | price=${Euro(c.price)} | inc=${Logger.inc(c.inc)} | lastBid=${c.lastBidAmount ? Euro(c.lastBidAmount) : '-'} | bid=${Euro(c.bidAmount)}`);
     }
 
     await this.executor.execute(token, candidates);

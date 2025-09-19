@@ -8,4 +8,13 @@ export const Logger = {
   skip: (player, reason) =>
     console.log(chalk.gray(`🛑 [SKIP] ${player}`), chalk.dim(reason)),
   section: (title) => console.log(chalk.cyan.bold(`\n--- ${title} ---`)),
+  inc: (value) => {
+    if (value > 0) {
+      return chalk.green(`▲${value}`);
+    } else if (value < 0) {
+      return chalk.red(`▼${value}`);
+    } else {
+      return chalk.gray(`•${value}`);
+    }
+  }
 };
