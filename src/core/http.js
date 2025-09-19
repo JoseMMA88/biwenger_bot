@@ -1,4 +1,4 @@
-class HttpClient {
+export class HttpClient {
   constructor(defaultHeaders = {}, timeoutMs = 15000) {
     this.defaultHeaders = defaultHeaders;
     this.timeoutMs = timeoutMs;
@@ -36,5 +36,3 @@ class HttpClient {
     });
   }
 }
-
-module.exports = { HttpClient };

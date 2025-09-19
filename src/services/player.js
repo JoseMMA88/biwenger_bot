@@ -1,6 +1,6 @@
 import { PickNumber } from '../utils/numbers.js';
 
-class PlayerService {
+export class PlayerService {
   constructor(config, http) {
     this.config = config;
     this.http = http;
@@ -38,5 +38,3 @@ class PlayerService {
     throw new Error(`No se pudieron obtener detalles del jugador ${playerId}`);
   }
 }
-
-module.exports = { PlayerService };

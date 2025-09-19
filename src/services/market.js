@@ -1,4 +1,4 @@
-class MarketService {
+export class MarketService {
   constructor(config, http) {
     this.config = config;
     this.http = http;
@@ -30,5 +30,3 @@ class MarketService {
     return { ok: true, endpoint: 'offers', res: r };
   }
 }
-
-module.exports = { MarketService };

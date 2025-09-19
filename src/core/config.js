@@ -1,4 +1,4 @@
-class Config {
+export class Config {
   constructor(env = process.env) {
     this.EMAIL = env.BIWENGER_EMAIL || '';
     this.PASSWORD = env.BIWENGER_PASSWORD || '';
@@ -29,5 +29,3 @@ class Config {
     if (missing.length) throw new Error(`Faltan variables de entorno: ${missing.join(', ')}`);
   }
 }
-
-module.exports = { Config };
