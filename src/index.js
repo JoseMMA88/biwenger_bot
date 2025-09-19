@@ -14,8 +14,6 @@ import { PlayerService } from './services/player.js';
 import { BidPolicy } from './domain/bidPolicy.js';
 import { BidExecutor } from './domain/bidExecutor.js';
 
-import { App } from './app';
-
 (async function bootstrap() {
   const cfg = new Config(process.env);
 
