@@ -1,6 +1,6 @@
 import { Logger } from '../utils/logger.js';
 
-class AuthService {
+export class AuthService {
   constructor(config) {
     this.config = config;
   }
@@ -40,5 +40,3 @@ class AuthService {
     return token;
   }
 }
-
-module.exports = { AuthService };
