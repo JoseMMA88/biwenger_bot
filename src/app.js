@@ -1,3 +1,5 @@
+import { logger } from './utils/logger.js';
+
 const { euro } = require('./utils/numbers');
 
 class App {
@@ -12,13 +14,13 @@ class App {
 
   async run() {
     this.cfg.validate();
-    console.log('[INIT] Biwenger API bidder starting… DRY_RUN=', this.cfg.DRY_RUN);
+    logger.info('[INIT] Biwenger API bidder starting… DRY_RUN=', this.cfg.DRY_RUN);
 
     const token = await this.auth.getToken();
-    console.log('[AUTH] Token obtenido.');
+    logger.success('[AUTH] Token obtenido.');
 
     const auctions = await this.market.getAuctions(token);
-    console.log(`[MARKET] Auctions detectadas: ${auctions.length}`);
+    logger.success(`[MARKET] Auctions detectadas: ${auctions.length}`);
 
     const candidates = [];
 
@@ -26,14 +28,14 @@ class App {
       const playerId = a.playerId ?? a.id ?? a.player?.id;
       const playerName = a.player?.name || a.name || '(sin nombre)';
       if (!playerId) {
-        console.log('[SKIP] Auction sin playerId claro:', a?.id ?? '(sin id)');
+        logger.skip('(sin nombre)', 'no está claro');
         continue;
       }
 
       const lastBid = a?.lastBid ?? null;
 
       if (this.policy.isMyLastBid(lastBid, this.cfg.USER_ID)) {
-        console.log(`[SKIP] ${playerName} descartado: última puja es tuya (from.id=${lastBid?.from?.id}).`);
+        logger.skip(`${playerName}, 'última puja es tuya (from.id=${lastBid?.from?.id}).`);
         continue;
       }
 
@@ -41,7 +43,7 @@ class App {
       try {
         details = await this.players.getDetails(playerId);
       } catch (e) {
-        console.log(`[SKIP] ${playerName} (${playerId}) sin detalles: ${String(e)}`);
+        logger.skip(`${playerName}', '(${playerId}) sin detalles: ${String(e)}`);
         continue;
       }
 
@@ -50,12 +52,12 @@ class App {
       const inc = Number(details.priceIncrement);
 
       if (!Number.isFinite(price)) {
-        console.log(`[SKIP] ${name} sin price válido.`);
+        logger.skip(`${name}', 'sin price válido.`);
         continue;
       }
 
       if (!this.policy.isIncrementCandidate(inc)) {
-        console.log(`[SKIP] ${name} inc=${inc} < ${this.cfg.INCREMENT_THRESHOLD}`);
+        logger.skip(`${name}', 'inc=${inc} < ${this.cfg.INCREMENT_THRESHOLD}`);
         continue;
       }
 
@@ -64,7 +66,7 @@ class App {
 
       if (!this.policy.withinCap(bidAmount, price)) {
         const cap = Math.floor(price * this.cfg.MAX_PRICE_MULTIPLIER);
-        console.log(`[SKIP] ${name} bid=${bidAmount} excede 150% de price=${price} (cap=${cap}).`);
+        logger.skip(`${name}', bid=${bidAmount} excede 150% de price=${price} (cap=${cap}).`);
         continue;
       }
 
@@ -79,19 +81,19 @@ class App {
     }
 
     if (candidates.length === 0) {
-      console.log('[DONE] No hay candidatos que cumplan las reglas.');
+      logger.success('[DONE] No hay candidatos que cumplan las reglas.');
       return;
     }
 
     candidates.sort((a, b) => (b.inc - a.inc) || (a.bidAmount - b.bidAmount));
 
-    console.log('--- Candidatos ---');
+    logger.section('Candidatos');
     for (const c of candidates) {
-      console.log(`Player ${c.name} ${c.playerId} | price=${euro(c.price)} | inc=${euro(c.inc)} | lastBid=${c.lastBidAmount ? euro(c.lastBidAmount) : '-'} | bid=${euro(c.bidAmount)}`);
+      logger.success(`Player ${c.name} ${c.playerId} | price=${euro(c.price)} | inc=${euro(c.inc)} | lastBid=${c.lastBidAmount ? euro(c.lastBidAmount) : '-'} | bid=${euro(c.bidAmount)}`);
     }
 
     await this.executor.execute(token, candidates);
-    console.log('[END] Proceso completado.');
+    logger.success('[END] Proceso completado.');
   }
 }
 

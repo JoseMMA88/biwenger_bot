@@ -1,3 +1,5 @@
+import { logger } from './utils/logger.js';
+
 class AuthService {
   constructor(config) {
     this.config = config;
@@ -5,7 +7,7 @@ class AuthService {
 
   async getToken() {
     if (this.config.TOKEN) {
-      console.log('[AUTH] Usando BIWENGER_TOKEN (saltando login).');
+      logger.info('[AUTH] Usando BIWENGER_TOKEN (saltando login).');
       return this.config.TOKEN;
     }
     const url = 'https://biwenger.as.com/api/v2/auth/login';
@@ -28,8 +30,8 @@ class AuthService {
 
     const txt = await res.text();
     if (!res.ok) {
-      console.error('[LOGIN DEBUG] status=', res.status, 'email=', body.email);
-      console.error('[LOGIN DEBUG] body=', txt);
+      logger.error('[LOGIN DEBUG] status=', res.status, 'email=', body.email);
+      logger.error('[LOGIN DEBUG] body=', txt);
       throw new Error(`Login failed ${res.status}`);
     }
     const json = txt ? JSON.parse(txt) : {};
