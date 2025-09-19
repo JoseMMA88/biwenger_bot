@@ -1,4 +1,4 @@
-const PickNumber = (...vals) => {
+export const PickNumber = (...vals) => {
   for (const v of vals) {
     const n = Number(v);
     if (Number.isFinite(n)) return n;
@@ -6,6 +6,4 @@ const PickNumber = (...vals) => {
   return undefined;
 };
 
-const Euro = (n) => new Intl.NumberFormat('es-ES').format(n) + ' €';
-
-module.exports = { PickNumber, Euro };
+export const Euro = (n) => new Intl.NumberFormat('es-ES').format(n) + ' €';
