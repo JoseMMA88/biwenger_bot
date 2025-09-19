@@ -1,10 +1,13 @@
 {
-  "name": "biwenger-api-bidder",
+  "name": "biwenger-bidder",
   "version": "1.0.0",
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "start": "node scripts/bid-biwenger-api.js"
+    "start": "node src/index.js",
+    "dev": "node --trace-uncaught src/index.js"
   },
-  "dependencies": {}
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
 }

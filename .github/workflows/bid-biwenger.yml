@@ -1,4 +1,4 @@
-name: Biwenger API Bot (hourly)
+name: Biwenger API Bot
 
 on:
   schedule:
@@ -27,7 +27,7 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Run Biwenger API bidding
+      - name: Run Biwenger bidding
         env:
           BIWENGER_EMAIL: ${{ secrets.BIWENGER_EMAIL }}
           BIWENGER_PASSWORD: ${{ secrets.BIWENGER_PASSWORD }}
@@ -38,4 +38,4 @@ jobs:
           MAX_PRICE_MULTIPLIER: ${{ env.MAX_PRICE_MULTIPLIER }}
           BID_INCREMENT_FACTOR: ${{ env.BID_INCREMENT_FACTOR }}
           DRY_RUN: ${{ env.DRY_RUN }}
-        run: node bid-biwenger.js
+        run: node src/index.js
