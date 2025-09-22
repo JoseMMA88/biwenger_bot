@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 try { require('dotenv').config(); } catch {}
 
 import { App } from './app.js';
@@ -30,7 +32,7 @@ import { BidExecutor } from './domain/bidExecutor.js';
   const policy = new BidPolicy(cfg);
   const executor = new BidExecutor(cfg, market, policy);
 
-  const app = new App(cfg, auth, market, players, policy, executor);
+  const app = new App(cfg, auth, market, players, policy, executor, Logger);
 
   app.run().catch(err => {
     Logger.error(err);
