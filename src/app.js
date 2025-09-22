@@ -46,8 +46,8 @@ export class App {
     this.logger.section('Candidatos');
     for (const c of candidates) {
       this.logger.success(
-        `Player ${c.name} ${c.playerId} | price=${euro(c.price)} | ${this.logger.inc(c.inc)} | ` +
-        `lastBid=${c.lastBidAmount ? euro(c.lastBidAmount) : '-'} | bid=${euro(c.bidAmount)}`
+        `Player ${c.name} ${c.playerId} | price=${Euro(c.price)} | ${this.logger.inc(c.inc)} | ` +
+        `lastBid=${c.lastBidAmount ? Euro(c.lastBidAmount) : '-'} | bid=${Euro(c.bidAmount)}`
       );
     }
 
