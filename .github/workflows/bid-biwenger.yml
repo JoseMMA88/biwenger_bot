@@ -14,7 +14,7 @@ jobs:
       X_VERSION: "628"
       MAX_PRICE_MULTIPLIER: "1.5"   # tope 150% del price
       BID_INCREMENT_FACTOR: "1.01"  # +1%
-      INCREMENT_THRESHOLD: "40000"
+      INCREMENT_THRESHOLD: "60000"
       DRY_RUN: "0"                  # "1" para simular sin pujar
 
     steps:
