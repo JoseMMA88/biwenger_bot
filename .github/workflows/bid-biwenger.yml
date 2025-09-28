@@ -1,4 +1,4 @@
-name: Biwenger API Bot
+name: Biwenger Auctions Bot
 
 on:
   schedule:
@@ -9,12 +9,12 @@ jobs:
   run-bot:
     runs-on: ubuntu-latest
     env:
-      # Config por defecto (puedes sobreescribir con secrets si quieres)
       X_LANG: es
       X_VERSION: "628"
       MAX_PRICE_MULTIPLIER: "1.5"   # tope 150% del price
       BID_INCREMENT_FACTOR: "1.01"  # +1%
       INCREMENT_THRESHOLD: "60000"
+      MAX_AUCTION_HOURS: "2"
       DRY_RUN: "0"                  # "1" para simular sin pujar
 
     steps:
@@ -39,5 +39,6 @@ jobs:
           X_VERSION: ${{ env.X_VERSION }}
           MAX_PRICE_MULTIPLIER: ${{ env.MAX_PRICE_MULTIPLIER }}
           BID_INCREMENT_FACTOR: ${{ env.BID_INCREMENT_FACTOR }}
+          MAX_AUCTION_HOURS: ${{ env.MAX_AUCTION_HOURS }}
           DRY_RUN: ${{ env.DRY_RUN }}
         run: node src/index.js
