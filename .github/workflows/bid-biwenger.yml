@@ -2,7 +2,7 @@ name: Biwenger Auctions Bot
 
 on:
   schedule:
-    - cron: "0 * * * *"   # cada hora en el min 0 (UTC)
+    - cron: "*/48 * * * *"   # cada 48 minutos (UTC)
   workflow_dispatch:       # permitir lanzarlo a mano
 
 jobs:
