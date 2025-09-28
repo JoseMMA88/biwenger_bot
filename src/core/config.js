@@ -15,6 +15,11 @@ export class Config {
     this.BID_INCREMENT_FACTOR = Number(env.BID_INCREMENT_FACTOR || '1.01');
     this.INCREMENT_THRESHOLD = Number(env.INCREMENT_THRESHOLD || '40000');
 
+    const auctionHours = Number(env.MAX_AUCTION_HOURS ?? env.MAX_AUCTION_TIME_HOURS);
+    this.MAX_AUCTION_TIME_MS = Number.isFinite(auctionHours) && auctionHours > 0
+      ? auctionHours * 60 * 60 * 1000
+      : 2 * 60 * 60 * 1000;
+
     this.TIMEOUT_MS = Number(env.TIMEOUT_MS || '15000');
   }
 

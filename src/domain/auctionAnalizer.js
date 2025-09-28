@@ -36,6 +36,23 @@ export class AuctionAnalyzer {
     const price = Number(details?.price);
     const inc = Number(details?.priceIncrement);
 
+    // 0) Queda poco para que acabe la puja
+    const now = Date.now();
+    const msLeft = this.policy.timeRemainingMs(a?.until, now);
+    const endsSoon = this.policy.isAuctionEndingSoon(a?.until, now);
+    if (!endsSoon) {
+      if (!Number.isFinite(msLeft)) {
+        this.logger.skip(name, 'queda mucho timpo aún');
+      } else if (msLeft <= 0) {
+        this.logger.skip(name, 'auction expirada.');
+      } else {
+        const minutesLeft = Math.ceil(msLeft / 60000);
+        const limitMinutes = Math.floor(this.cfg.MAX_AUCTION_TIME_MS / 60000);
+        this.logger.skip(name, `restan ${minutesLeft} min (> ${limitMinutes} min).`);
+      }
+      return null;
+    }
+
     // Resto de validaciones basadas en detalles + auction
     const lastBid = a?.lastBid ?? null;
 

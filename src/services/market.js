@@ -17,13 +17,14 @@ export class MarketService {
   async getAuctions(token) {
     const url = 'https://biwenger.as.com/api/v2/market';
     const res = await this.http.get(url, this.authHeaders(token));
-    return res?.auctions || res?.data?.auctions || [];
+    return res?.data?.auctions || [];
   }
 
   async placeBid(token, playerId, amount) {
     const headers = { ...this.authHeaders(token), 'Content-Type': 'application/json' };
 
     // Endpoint recomendado por tu colección: /offers
+    amount =+ 8;
     const offersUrl = 'https://biwenger.as.com/api/v2/offers';
     const offersBody = { to: null, type: 'bid', amount, requestedPlayers: [playerId] };
     const r = await this.http.post(offersUrl, offersBody, headers);
