@@ -38,7 +38,14 @@ export class App {
 
     if (candidates.length === 0) {
       this.logger.info('[DONE] No hay candidatos que cumplan las reglas.');
-      return;
+      const schedule = this.buildSchedule(false);
+      this.logSchedule(schedule);
+      return {
+        candidates,
+        candidateCount: 0,
+        hasCandidates: false,
+        schedule
+      };
     }
 
     candidates.sort((a, b) => (b.inc - a.inc) || (a.bidAmount - b.bidAmount));
@@ -53,5 +60,27 @@ export class App {
 
     await this.executor.execute(token, candidates);
     this.logger.success('[END] Proceso completado.');
+
+    const schedule = this.buildSchedule(true);
+    this.logSchedule(schedule);
+
+    return {
+      candidates,
+      candidateCount: candidates.length,
+      hasCandidates: true,
+      schedule
+    };
+  }
+
+  buildSchedule(hasCandidates) {
+    return {
+      hasCandidates,
+      nextRunSeconds: hasCandidates ? 15 * 60 : 6 * 60 * 60,
+      nextRunHuman: hasCandidates ? '15 minutos' : '6 horas'
+    };
+  }
+
+  logSchedule(schedule) {
+    this.logger.info(`[SCHEDULE] Próxima ejecución recomendada: ${schedule.nextRunHuman}.`);
   }
 }
