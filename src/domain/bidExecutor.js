@@ -11,6 +11,10 @@ export class BidExecutor {
 
   async execute(token, candidates) {
     for (const c of candidates) {
+      if (c.lastBidIsMine) {
+        Logger.skip(c.name, 'última puja ya es tuya.');
+        continue;
+      }
       if (this.cfg.DRY_RUN) {
         Logger.info(`[DRY_RUN] Simular puja → ${c.name} (${c.playerId}) por ${Euro(c.bidAmount)}`);
         continue;

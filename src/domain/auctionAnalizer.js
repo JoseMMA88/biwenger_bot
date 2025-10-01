@@ -56,11 +56,7 @@ export class AuctionAnalyzer {
     // Resto de validaciones basadas en detalles + auction
     const lastBid = a?.lastBid ?? null;
 
-    // 2) Última puja mía
-    if (this.policy.isMyLastBid(lastBid, this.cfg.USER_ID)) {
-      this.logger.skip(name, `última puja es tuya (from.id=${lastBid?.from?.id}).`);
-      return null;
-    }
+    const lastBidIsMine = this.policy.isMyLastBid(lastBid, this.cfg.USER_ID);
 
     // 3) Precio válido
     if (!Number.isFinite(price)) {
@@ -101,7 +97,8 @@ export class AuctionAnalyzer {
       price,
       inc,
       lastBidAmount: Number.isFinite(lastBidAmount) ? lastBidAmount : null,
-      bidAmount
+      bidAmount,
+      lastBidIsMine
     };
   }
 }
