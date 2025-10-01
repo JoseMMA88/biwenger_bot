@@ -15,7 +15,10 @@ export class BidPolicy {
 
   computeBidAmount(price, lastBidAmount) {
     const base = Number.isFinite(lastBidAmount) ? lastBidAmount : price;
-    return Math.floor(base * this.cfg.BID_INCREMENT_FACTOR);
+    const multiplied = base * this.cfg.BID_INCREMENT_FACTOR;
+    const roundedUp = Math.ceil(multiplied);
+    const minIncrement = base + 1;
+    return Math.max(roundedUp, minIncrement);
   }
 
   timeRemainingMs(untilEpoch, now = Date.now()) {
@@ -32,6 +35,6 @@ export class BidPolicy {
 
   withinCap(bidAmount, price) {
     const cap = Math.floor(price * this.cfg.MAX_PRICE_MULTIPLIER);
-    return bidAmount < cap;
+    return bidAmount <= cap;
   }
 }
