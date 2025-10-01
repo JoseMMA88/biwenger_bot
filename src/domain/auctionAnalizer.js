@@ -36,7 +36,7 @@ export class AuctionAnalyzer {
     const price = Number(details?.price);
     const inc = Number(details?.priceIncrement);
 
-    // 0) Queda poco para que acabe la puja
+    // 2) Queda poco para que acabe la puja
     const now = Date.now();
     const msLeft = this.policy.timeRemainingMs(a?.until, now);
     const endsSoon = this.policy.isAuctionEndingSoon(a?.until, now);
@@ -55,7 +55,6 @@ export class AuctionAnalyzer {
 
     // Resto de validaciones basadas en detalles + auction
     const lastBid = a?.lastBid ?? null;
-
     const lastBidIsMine = this.policy.isMyLastBid(lastBid, this.cfg.USER_ID);
 
     // 3) Precio válido
