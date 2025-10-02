@@ -87,6 +87,12 @@ export class App {
   }
 
   logCompletion() {
-    this.logger.info(`[TIMESTAMP] Finalizado a las ${new Date().toLocaleString()}`);
+    const formatter = new Intl.DateTimeFormat('es-ES', {
+      timeZone: 'Europe/Madrid',
+      dateStyle: 'short',
+      timeStyle: 'medium'
+    });
+    const formatted = formatter.format(new Date());
+    this.logger.info(`[TIMESTAMP] Finalizado (Europe/Madrid) a las ${formatted}`);
   }
 }
