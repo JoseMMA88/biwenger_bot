@@ -40,6 +40,7 @@ export class App {
       this.logger.info('[DONE] No hay candidatos que cumplan las reglas.');
       const schedule = this.buildSchedule(false);
       this.logSchedule(schedule);
+      this.logCompletion();
       return {
         candidates,
         candidateCount: 0,
@@ -63,7 +64,7 @@ export class App {
 
     const schedule = this.buildSchedule(true);
     this.logSchedule(schedule);
-    this.logger.info(`[TIMESTAMP] Finalizado a las ${new Date().toLocaleString()}`);
+    this.logCompletion();
 
     return {
       candidates,
@@ -83,5 +84,9 @@ export class App {
 
   logSchedule(schedule) {
     this.logger.info(`[SCHEDULE] Próxima ejecución recomendada: ${schedule.nextRunHuman}.`);
+  }
+
+  logCompletion() {
+    this.logger.info(`[TIMESTAMP] Finalizado a las ${new Date().toLocaleString()}`);
   }
 }
