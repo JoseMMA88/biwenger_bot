@@ -63,6 +63,7 @@ export class App {
 
     const schedule = this.buildSchedule(true);
     this.logSchedule(schedule);
+    this.logger.info(`[TIMESTAMP] Finalizado a las ${new Date().toLocaleString()}`);
 
     return {
       candidates,
