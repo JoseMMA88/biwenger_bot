@@ -93,6 +93,6 @@ export class App {
       timeStyle: 'medium'
     });
     const formatted = formatter.format(new Date());
-    this.logger.info(`[TIMESTAMP] Finalizado (Europe/Madrid) a las ${formatted}`);
+    this.logger.info(`[TIMESTAMP] Finalizado a las ${formatted}`);
   }
 }
