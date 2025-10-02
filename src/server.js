@@ -42,9 +42,14 @@ const server = http.createServer(async (req, res) => {
     try {
       const app = createApp();
       const result = await app.run();
+      const formatter = new Intl.DateTimeFormat('es-ES', {
+        timeZone: 'Europe/Madrid',
+        dateStyle: 'short',
+        timeStyle: 'medium'
+      });
       lastResult = {
         ...result,
-        executedAt: new Date().toISOString()
+        executedAt: formatter.format(new Date())
       };
 
       return sendJson(res, 200, {
