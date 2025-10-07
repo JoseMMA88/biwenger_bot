@@ -39,19 +39,16 @@ export class AuctionAnalyzer {
     // 2) Queda poco para que acabe la puja
     const now = Date.now();
     const msLeft = this.policy.timeRemainingMs(a?.until, now);
-    const endsSoon = this.policy.isAuctionEndingSoon(a?.until, now);
-    if (!endsSoon) {
-      if (!Number.isFinite(msLeft)) {
-        this.logger.skip(name, 'queda mucho timpo aún');
-      } else if (msLeft <= 0) {
-        this.logger.skip(name, 'auction expirada.');
-      } else {
-        const minutesLeft = Math.ceil(msLeft / 60000);
-        const limitMinutes = Math.floor(this.cfg.MAX_AUCTION_TIME_MS / 60000);
-        this.logger.skip(name, `restan ${minutesLeft} min (> ${limitMinutes} min).`);
-      }
+    if (!Number.isFinite(msLeft)) {
+      this.logger.skip(name, 'sin tiempo restante válido.');
       return null;
     }
+    if (msLeft <= 0) {
+      this.logger.skip(name, 'auction expirada.');
+      return null;
+    }
+
+    const readyToBid = this.policy.isReadyToBid(a?.until, now);
 
     // Resto de validaciones basadas en detalles + auction
     const lastBid = a?.lastBid ?? null;
@@ -97,7 +94,10 @@ export class AuctionAnalyzer {
       inc,
       lastBidAmount: Number.isFinite(lastBidAmount) ? lastBidAmount : null,
       bidAmount,
-      lastBidIsMine
+      lastBidIsMine,
+      readyToBid,
+      timeRemainingMs: msLeft,
+      auctionUntil: a?.until ?? null
     };
   }
 }

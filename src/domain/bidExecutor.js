@@ -15,6 +15,20 @@ export class BidExecutor {
         Logger.skip(c.name, 'última puja ya es tuya.');
         continue;
       }
+
+      const readyToBid = this.policy.isReadyToBid(c.auctionUntil);
+      if (!readyToBid) {
+        const msRemaining = this.policy.timeRemainingMs(c.auctionUntil);
+        const minutesLeft = Number.isFinite(msRemaining)
+          ? Math.max(0, Math.ceil(msRemaining / 60000))
+          : '-';
+        const thresholdMinutes = Math.floor(this.cfg.BID_READY_THRESHOLD_MS / 60000);
+        Logger.info(
+          `[WAIT] ${c.name}: faltan ${minutesLeft} min para alcanzar el umbral de ${thresholdMinutes} min.`
+        );
+        continue;
+      }
+
       if (this.cfg.DRY_RUN) {
         Logger.info(`[DRY_RUN] Simular puja → ${c.name} (${c.playerId}) por ${Euro(c.bidAmount)}`);
         continue;

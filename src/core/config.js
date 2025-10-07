@@ -20,6 +20,11 @@ export class Config {
       ? auctionHours * 60 * 60 * 1000
       : 2 * 60 * 60 * 1000;
 
+    const readyMinutes = Number(env.BID_READY_MINUTES ?? '60');
+    this.BID_READY_THRESHOLD_MS = Number.isFinite(readyMinutes) && readyMinutes > 0
+      ? readyMinutes * 60 * 1000
+      : 60 * 60 * 1000;
+
     this.TIMEOUT_MS = Number(env.TIMEOUT_MS || '15000');
   }
 

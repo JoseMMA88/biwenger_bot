@@ -33,6 +33,11 @@ export class BidPolicy {
     return Number.isFinite(remainingMs) && remainingMs > 0 && remainingMs <= this.cfg.MAX_AUCTION_TIME_MS;
   }
 
+  isReadyToBid(untilEpoch, now = Date.now()) {
+    const remainingMs = this.timeRemainingMs(untilEpoch, now);
+    return Number.isFinite(remainingMs) && remainingMs > 0 && remainingMs <= this.cfg.BID_READY_THRESHOLD_MS;
+  }
+
   withinCap(bidAmount, price) {
     const cap = Math.floor(price * this.cfg.MAX_PRICE_MULTIPLIER);
     return bidAmount <= cap;
